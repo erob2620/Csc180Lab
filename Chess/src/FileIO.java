@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 
 
 public class FileIO {
-	HashMap pieces;
-	public static final Pattern CHESS_PATTERN = Pattern.compile("([A-Za-z][\\w*])(\\D\\w*)");
+	private static HashMap pieces;
+	public static final Pattern CHESS_PATTERN = Pattern.compile("(?<piece>[A-Za-z][\\w*]\\s*)(?<position>[\\w]\\d*\\W*\\s*)(?<pos2>\\w*\\w*\\s*)(?<pos3>\\w*\\w*)");
 	
-	public FileIO() {
+	static {
 		pieces = new HashMap();
 		
 		pieces.put("K", "King");
@@ -28,44 +28,66 @@ public class FileIO {
 	
 	public static void main(String[] args) throws IOException {
 		FileIO fio = new FileIO();
-		fio.run(fio);
-	}
-
-	public void run(FileIO fio) throws IOException{
-		File file = new File("src/ChessInput.txt");
+		File file = new File(args[0]);
 		
 		FileInputStream fis = new FileInputStream(file);
 		InputStreamReader isr = new InputStreamReader(fis);
 		BufferedReader reader = new BufferedReader(isr);
 		
-		String newLine = reader.readLine();
-		
-		while(newLine != null) {
+		try {
+			String newLine = reader.readLine();
 			
-			Matcher m = CHESS_PATTERN.matcher(newLine);
-			
-			while(m.find()) {
-				String piece = m.group(1);
-				String position = m.group(2);
+			while(newLine != null) {
+				fio.run(fio, newLine);
 				
-				if(pieces.get(piece.substring(1)) != null) {
-					fio.piecePlacement(piece, position);
-				}else {
-					fio.pieceMovement(piece, position);
-				}
+				newLine = reader.readLine();
 			}
-			
-			newLine = reader.readLine();
+		}catch(IOException e) {
+			System.out.println("A fatal error has occured.");
+			e.printStackTrace();
 		}
 	}
-	
+
+	public void run(FileIO fio, String newLine) {
+
+		Matcher m = CHESS_PATTERN.matcher(newLine);
+
+		while (m.find()) {
+			String piece = m.group("piece");
+			String position = m.group("position");
+			String positionTwo = m.group("pos2");
+			String positionThree = m.group("pos3");
+
+			if (pieces.get(piece.substring(1)) != null && positionTwo.equals("")) {
+				fio.piecePlacement(piece, position);
+				
+			} else if (!positionTwo.equals("")) {
+				fio.multiPieceMovement(piece, position, positionTwo,positionThree);
+				
+			} else {
+				fio.pieceMovement(piece, position);
+			}
+		}
+	}
+	public void multiPieceMovement(String piece, String position, String positionTwo, String positionThree) {
+		piece = piece.substring(0,2);
+		position = position.substring(0,2);
+		positionTwo = positionTwo.substring(0,2);
+		positionThree = positionThree.substring(0,2);
+		
+		System.out.println("Moves the king from " + piece + " to " + position + " and moves the rook from "  
+				+ positionTwo + " to " + positionThree);
+	}
 	public void pieceMovement(String piece, String position) {
 		if(position.contains("*")) {
-			position = position.substring(1,3);
+			
+			piece = piece.substring(0,2);
+			position = position.substring(0,2);
+			
 			System.out.println("Moves the piece at " + piece.toUpperCase() + " to the square at " + position.toUpperCase() 
 					+ " and captures the piece at " + position.toUpperCase());
 		}else {
-			position = position.substring(1,3);
+			piece = piece.substring(0,2);
 			System.out.println("Moves the piece at " + piece.toUpperCase() + " to the square at " + position.toUpperCase());
 		}
 	}
