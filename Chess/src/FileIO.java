@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class FileIO {
 	private static HashMap pieces;
-	public static final Pattern CHESS_PATTERN = Pattern.compile("(?<piece>[A-Za-z][\\w*]\\s*)(?<position>[\\w]\\d*\\W*\\s*)(?<pos2>\\w*\\w*\\s*)(?<pos3>\\w*\\w*)");
+	public static final Pattern CHESS_PATTERN = Pattern.compile("(?<piece>[A-Za-z]\\w\\s*)(?<position>\\w\\d*\\W*\\s*)(?<pos2>\\w*\\w*\\s*)(?<pos3>\\w*\\w*)");
 	
 	static {
 		pieces = new HashMap();
@@ -53,6 +53,7 @@ public class FileIO {
 		Matcher m = CHESS_PATTERN.matcher(newLine);
 
 		while (m.find()) {
+			
 			String piece = m.group("piece");
 			String position = m.group("position");
 			String positionTwo = m.group("pos2");
@@ -78,6 +79,7 @@ public class FileIO {
 		System.out.println("Moves the king from " + piece + " to " + position + " and moves the rook from "  
 				+ positionTwo + " to " + positionThree);
 	}
+	
 	public void pieceMovement(String piece, String position) {
 		if(position.contains("*")) {
 			
@@ -93,8 +95,7 @@ public class FileIO {
 	}
 
 	public void piecePlacement(String piece, String position) {
-		String pieceName = (String) pieces.get(piece.substring(0,1));
-		
+		String pieceName = (String) pieces.get(piece.substring(0,1));	
 		String pieceColor = (String) pieces.get(piece.substring(1));
 		
 		System.out.println("Place the " + pieceColor + " " + pieceName + " on " + position.toUpperCase());
