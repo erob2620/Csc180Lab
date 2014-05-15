@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class FileIO {
 	private static HashMap pieces;
-	public static final Pattern CHESS_PATTERN = Pattern.compile("(?<piece>[A-Za-z][ld0-9]\\s*)(?<position>\\w\\d\\W*\\s*)(?<pos2>\\w*\\w*\\s*)(?<pos3>\\w*\\w*)");
+	public static final Pattern CHESS_PATTERN = Pattern.compile("(?<piece>[A-Za-z][ld0-9]\\s*)(?<position>\\w\\d\\W*\\s*)(?<pos2>\\w*\\d*\\s*)(?<pos3>\\w*\\d*)");
 	
 	static {
 		pieces = new HashMap();
@@ -35,20 +35,19 @@ public class FileIO {
 		BufferedReader reader = new BufferedReader(isr);
 		
 		try {
-			String newLine = reader.readLine();
-			
-			while(newLine != null) {
-				fio.parse(fio, newLine);
-				
-				newLine = reader.readLine();
+			while (true) {
+				String newLine = reader.readLine();
+				if (newLine == null) break;
+				fio.parse(newLine);
 			}
+			
 		}catch(IOException e) {
 			System.out.println("A fatal error has occured.");
 			e.printStackTrace();
 		}
 	}
 
-	public void parse(FileIO fio, String newLine) {
+	public void parse( String newLine) {
 
 		Matcher m = CHESS_PATTERN.matcher(newLine);
 
@@ -60,13 +59,13 @@ public class FileIO {
 			String positionThree = m.group("pos3");
 
 			if (pieces.get(piece.substring(1)) != null && positionTwo.equals("")) {
-				fio.piecePlacement(piece, position);
+				piecePlacement(piece, position);
 				
 			} else if (!positionTwo.equals("")) {
-				fio.multiPieceMovement(piece, position, positionTwo,positionThree);
+				multiPieceMovement(piece, position, positionTwo,positionThree);
 				
 			} else {
-				fio.pieceMovement(piece, position);
+				pieceMovement(piece, position);
 			}
 		}
 	}
