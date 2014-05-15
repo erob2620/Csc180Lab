@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class FileIO {
 	private static HashMap pieces;
-	public static final Pattern CHESS_PATTERN = Pattern.compile("(?<piece>[A-Za-z]\\w\\s*)(?<position>\\w\\d*\\W*\\s*)(?<pos2>\\w*\\w*\\s*)(?<pos3>\\w*\\w*)");
+	public static final Pattern CHESS_PATTERN = Pattern.compile("(?<piece>[A-Za-z][ld0-9]\\s*)(?<position>\\w\\d\\W*\\s*)(?<pos2>\\w*\\w*\\s*)(?<pos3>\\w*\\w*)");
 	
 	static {
 		pieces = new HashMap();
@@ -38,7 +38,7 @@ public class FileIO {
 			String newLine = reader.readLine();
 			
 			while(newLine != null) {
-				fio.run(fio, newLine);
+				fio.parse(fio, newLine);
 				
 				newLine = reader.readLine();
 			}
@@ -48,7 +48,7 @@ public class FileIO {
 		}
 	}
 
-	public void run(FileIO fio, String newLine) {
+	public void parse(FileIO fio, String newLine) {
 
 		Matcher m = CHESS_PATTERN.matcher(newLine);
 
@@ -71,23 +71,23 @@ public class FileIO {
 		}
 	}
 	public void multiPieceMovement(String piece, String position, String positionTwo, String positionThree) {
-		piece = piece.substring(0,2);
-		position = position.substring(0,2);
-		positionTwo = positionTwo.substring(0,2);
-		positionThree = positionThree.substring(0,2);
+		String firstPosition = piece.substring(0,2);
+		String secondPosition = position.substring(0,2);
+		String thirdPosition = positionTwo.substring(0,2);
+		String fourthPosition = positionThree.substring(0,2);
 		
-		System.out.println("Moves the king from " + piece + " to " + position + " and moves the rook from "  
-				+ positionTwo + " to " + positionThree);
+		System.out.println("Moves the king from " + firstPosition + " to " + secondPosition + " and moves the rook from "  
+				+ thirdPosition + " to " + fourthPosition);
 	}
 	
 	public void pieceMovement(String piece, String position) {
 		if(position.contains("*")) {
 			
-			piece = piece.substring(0,2);
-			position = position.substring(0,2);
+			String initialPosition = piece.substring(0,2).toUpperCase();
+			String finalPosition = position.substring(0,2).toUpperCase();
 			
-			System.out.println("Moves the piece at " + piece.toUpperCase() + " to the square at " + position.toUpperCase() 
-					+ " and captures the piece at " + position.toUpperCase());
+			System.out.println("Moves the piece at " + initialPosition + " to the square at " + finalPosition
+					+ " and captures the piece at " + finalPosition);
 		}else {
 			piece = piece.substring(0,2);
 			System.out.println("Moves the piece at " + piece.toUpperCase() + " to the square at " + position.toUpperCase());
