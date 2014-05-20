@@ -65,25 +65,27 @@ public class ChessBoard {
 	private void multiPieceMovement(String position, String positionTwo, String positionThree, String positionFour) {
 		pieceMovement(position, positionTwo);
 		pieceMovement(positionThree, positionFour);
-		fio.multiPieceMovement(position, positionFour, positionTwo, positionThree);
 		
 		
 	}
 	private void pieceMovement(String position, String positionTwo) {
 		int col = charToNumber(position.charAt(0));
-		int row = rowToNum(position);
+		int row = stringToNum(position);
 		
-		int newRow = rowToNum(positionTwo);
+		int newRow = stringToNum(positionTwo);
 		int newCol = charToNumber(positionTwo.charAt(0));
 		
-		if(board[col][row] == '-') {
+		if(!boundsCheck(newCol, newRow) || !boundsCheck(col,row)) {
+			System.out.println("The move you tried to make was outside the bounds of the board.");
+			
+		}else if(board[col][row] == '-'){
 			System.out.println("There was no piece to move at the location: " + position);
-		}else {
+			
+		}else{
 			char piece = board[col][row];
 			board[col][row] = '-';
 			
 			placePiece(newRow, newCol, piece);
-			fio.pieceMovement(position, positionTwo);
 		}
 	}
 
@@ -91,10 +93,15 @@ public class ChessBoard {
 		char pieceName = determineSide(piece);
 		
 		int col = charToNumber(position.charAt(0));
-		int row = rowToNum(position);
+		int row = stringToNum(position);
 		
-		placePiece(row, col, pieceName);
-		fio.piecePlacement(piece, position);
+		if(boundsCheck(col, row)) {
+			placePiece(row, col, pieceName);
+			fio.piecePlacement(piece, position);
+			
+		}else {
+			System.out.println("The move you tried to make was outside the bounds of the board.");
+		}
 	}
 
 	private void resetBoard() {
@@ -123,24 +130,12 @@ public class ChessBoard {
 	}
 	
 	private void placePiece(int row, int col, char name) {
-		if(boundsCheck(col, row)) {
-			board[col][invertRow(row)] = name;
-		}else {
-			System.out.println("The move you tried to make was outside the bounds of the board.");
-		}
+		board[col][invertRow(row)] = name;
 	}
 	private int invertRow(int row) {
-		int invertedRow = 0;
-		if(row == 4) {
-			invertedRow = 4;
-		}else if(row < 4) {
-			invertedRow = 7 - row; 
-		}else {
-			invertedRow = 7 - row;
-		}
-		return invertedRow;
+		return (row != 4)? 7 - row: 4;
 	}
-	private int rowToNum(String position) {
+	private int stringToNum(String position) {
 		return Integer.parseInt(position.substring(1,2)) - 1;
 	}
 	/**
