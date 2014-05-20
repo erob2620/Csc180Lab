@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 
 public class FileIO {
-	private static HashMap pieces;
+	public static HashMap pieces;
 	public static final Pattern CHESS_PATTERN = Pattern.compile("(?<piece>[A-Za-z][ld0-9]\\s*)(?<position>\\w\\d\\W*\\s*)(?<pos2>\\w*\\d*\\s*)(?<pos3>\\w*\\d*)");
 	
 	static {
